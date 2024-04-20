@@ -55,7 +55,7 @@ opts = subparser
     <> command "stop" (info (stop <$> option str (long "process" <> short 'p')) (progDesc "stop the process")) )
 
 main :: IO ()
-main = join $ execParser (info opts idm)
+main = join $ customExecParser (prefs disambiguate) (info opts idm)
 
 -- main :: IO ()
 -- main = greet =<< execParser opts
