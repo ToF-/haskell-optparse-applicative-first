@@ -2,6 +2,7 @@ module Main (main) where
 
 import Options.Applicative
 import Control.Monad
+import System.Environment
 
 data Sample = Sample
     {   hello :: String
@@ -54,8 +55,20 @@ opts = subparser
     ( command "start" (info (start <$> argument str (metavar "PROCESS")) (progDesc "start a process"))
     <> command "stop" (info (stop <$> option str (long "process" <> short 'p')) (progDesc "stop the process")) )
 
+
+stopCommand :: String -> String
+stopCommand s = "stop command (" ++ s ++ ")"
+
+options :: Parser String
+options = subparser
+    ( command "start" (info (return "start" <$> argument (str::ReadM String) (metavar "PROCESS")) (progDesc "start a process"))
+    <> command "stop" (info (stopCommand <$> option (str::ReadM String) (long "process" <> short 'p')) (progDesc "stop the process")))
+
 main :: IO ()
-main = join $ customExecParser (prefs disambiguate) (info opts idm)
+main = do 
+        -- join $ customExecParser (prefs disambiguate) (info opts idm)
+        args <- getArgs
+        print $ execParserPure (prefs disambiguate) (info options idm) args
 
 -- main :: IO ()
 -- main = greet =<< execParser opts
