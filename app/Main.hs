@@ -62,11 +62,12 @@ stopCommand s = "stop command (" ++ s ++ ")"
 options :: Parser String
 options = subparser
     ( command "start" (info (return "start" <$> argument (str::ReadM String) (metavar "PROCESS")) (progDesc "start a process"))
-    <> command "stop" (info (stopCommand <$> option (str::ReadM String) (long "process" <> short 'p')) (progDesc "stop the process")))
+    <> command "stop" (info (stopCommand <$> option (str::ReadM String) (long "process" <> short 'p')) (progDesc "stop the process"))
+    <> command "view" (info (pure "return return view") (progDesc "view processes")))
 
 main :: IO ()
 main = do 
-        -- join $ customExecParser (prefs disambiguate) (info opts idm)
+        -- join (customExecParser (prefs disambiguate) (info opts idm))
         args <- getArgs
         print $ execParserPure (prefs disambiguate) (info options idm) args
 
