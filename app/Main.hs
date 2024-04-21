@@ -65,11 +65,18 @@ options = subparser
     <> command "stop" (info (stopCommand <$> option (str::ReadM String) (long "process" <> short 'p')) (progDesc "stop the process"))
     <> command "view" (info (pure "return return view") (progDesc "view processes")))
 
+data Command = Accounts | Version deriving (Eq, Show)
+
+commands :: Parser Command
+commands = subparser
+    ( command "accounts" (info (pure Accounts) (progDesc "give accounts information"))
+    <> command "version" (info (pure Version) (progDesc "give version number")))
+
 main :: IO ()
 main = do 
         -- join (customExecParser (prefs disambiguate) (info opts idm))
         args <- getArgs
-        print $ execParserPure (prefs disambiguate) (info options idm) args
+        print $ execParserPure (prefs disambiguate) (info commands idm) args
 
 -- main :: IO ()
 -- main = greet =<< execParser opts
